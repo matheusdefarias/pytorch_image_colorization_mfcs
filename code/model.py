@@ -103,9 +103,15 @@ class Color_model(nn.Module):
             nn.Conv2d(in_channels = 128, out_channels = 128, kernel_size = 3, stride = 1, padding = 1, dilation = 1),
             nn.ReLU(),
         )
-            # conv8_313
-        self.conv8_313 = nn.Conv2d(in_channels = 128, out_channels = 313, kernel_size = 1, stride = 1, dilation = 1)
 
+        self.conv8_313 = nn.Sequential(
+            # conv8_313
+            nn.Conv2d(in_channels = 128, out_channels = 313, kernel_size = 1, stride = 1, dilation = 1),
+            nn.ReLU()
+        )
+
+        #self.conv8_313 = nn.Conv2d(in_channels = 128, out_channels = 313, kernel_size = 1, stride = 1, dilation = 1)
+        
         self.apply(weights_init)
 
     def forward(self, gray_image):

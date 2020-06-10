@@ -44,14 +44,14 @@ def load_image(image_path,transform=None):
     img_l_resized = img_l_resized - 50
     img_l_resized = torch.from_numpy(img_l_resized).unsqueeze(0)
     
-    img_l_64 = transforms.Resize(ori_size,2)(rgb_image) # *****************************************
-    img_l_64 = np.array(img_l_64)
-    img_l_64 = rgb2lab(img_l_64)
-    img_l_64 = img_l_64.transpose(2, 0, 1)
-    img_l_64 = (np.round(img_l_64[0,:,:])).astype(np.int)
-    img_l_64 = torch.from_numpy(img_l_64)
+    img_l_56 = transforms.Resize(ori_size,2)(rgb_image) 
+    img_l_56 = np.array(img_l_56)
+    img_l_56 = rgb2lab(img_l_56)
+    img_l_56 = img_l_56.transpose(2, 0, 1)
+    img_l_56 = (np.round(img_l_56[0,:,:])).astype(np.int)
+    img_l_56 = torch.from_numpy(img_l_56)
         
-    return img_l_resized, img_l_64, ori_size
+    return img_l_resized, img_l_56, ori_size
 
 def main(args):
     data_dir = args.test_images_dir
@@ -70,7 +70,7 @@ def main(args):
     
     for file in dirs:
     
-        img_l_resized, img_l_64, ori_size = load_image(data_dir+'/'+file, scale_transform)
+        img_l_resized, img_l_56, ori_size = load_image(data_dir+'/'+file, scale_transform)
 
         img_l_resized = img_l_resized.unsqueeze(0).float().cuda()
         
@@ -78,7 +78,7 @@ def main(args):
         #img_ab_313 = abs(img_ab_313)
         img_ab_313 = img_ab_313.cpu()
 
-        img_ab_313 = F.upsample(img_ab_313, size = ori_size, mode = 'nearest') # *****************************************
+        img_ab_313 = F.upsample(img_ab_313, size = ori_size, mode = 'nearest') 
         
         img_ab_313_log_t = (torch.log10(img_ab_313+0.001))/T
         
@@ -101,19 +101,19 @@ def main(args):
         predicted_ab_channels = predicted_ab_channels.squeeze(0).squeeze(0).transpose(2,0,1)
 
         predicted_ab_channels = predicted_ab_channels.transpose(1, 2, 0)
-        img_l_64 = img_l_64.numpy()
+        img_l_56 = img_l_56.numpy()
         # print(predicted_ab_channels.shape)
         # print(predicted_ab_channels)
 
-        img_lab_final = np.zeros((ori_size[0],ori_size[1], 3)) # *****************************************
+        img_lab_final = np.zeros((ori_size[0],ori_size[1], 3)) 
 
-        img_lab_final[:,:,0] = img_l_64
+        img_lab_final[:,:,0] = img_l_56
         img_lab_final[:,:,1:] = predicted_ab_channels
 
         #print(img_lab_final.transpose(2,0,1))
         
         img_rgb_final = lab2rgb(img_lab_final)
-        
+
         imageio.imwrite(args.output_images_dir + file, img_rgb_final*255)                
 
 if __name__ == '__main__':
@@ -122,7 +122,7 @@ if __name__ == '__main__':
     parser.add_argument('--test_images_dir', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/dataset/test/images', help = 'directory for test images')
     parser.add_argument('--output_images_dir', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/output/', help = 'directory to save output images')
 
-    parser.add_argument('--model_file', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/model-100-120.ckpt', help = 'model to be loaded')
+    parser.add_argument('--model_file', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/model-1000-25.ckpt', help = 'model to be loaded')
 
     parser.add_argument('--Q_bins_file', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/code/resources/pts_in_hull.npy', help = 'pts_in_hull.npy file to be loaded')
    

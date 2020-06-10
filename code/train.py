@@ -29,10 +29,8 @@ def main(args):
 
     data_loader = torch.utils.data.DataLoader(train_set, batch_size = args.batch_size, shuffle = True, num_workers = args.num_workers)
 
-    # model = Color_model().cuda()
-    # model.load_state_dict(torch.load(args.load_model))
-
     model = Color_model().cuda()
+    # model.load_state_dict(torch.load(args.load_model))
     criterion = nn.CrossEntropyLoss().cuda()
     params = list(model.parameters())
     optimizer = torch.optim.Adam(params, lr = args.learning_rate)
