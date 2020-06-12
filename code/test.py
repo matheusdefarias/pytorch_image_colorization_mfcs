@@ -1,3 +1,4 @@
+# Imports
 import os
 import imageio
 import argparse
@@ -54,17 +55,22 @@ def load_image(image_path,transform=None):
     return img_l_resized, img_l_56, ori_size
 
 def main(args):
+
     data_dir = args.test_images_dir
     dirs=os.listdir(data_dir)
     print(dirs)
+
+    # Model instance whose architecture was configured in the 'model.py' file
     color_model = Color_model().cuda().eval()
+    # Loading a pretrained model weights to the model instance archtecture
     color_model.load_state_dict(torch.load(args.model_file))
 
-    tensor_to_PIL = transforms.ToPILImage()
+    tensor_to_PIL = transforms.ToPILImage() # Create a transform that convert a tensor to a PIL Object
 
-    T = 0.38
-    soft = nn.Softmax(dim=1)
-    Q_bins = np.load(args.Q_bins_file)
+    # Annealed Mean
+    T = 0.38 # Temperature
+    soft = nn.Softmax(dim=1) # Instance of softmax function
+    Q_bins = np.load(args.Q_bins_file) # 313 bins of quantized colors
     #print(Q_bins.shape)
     #print(Q_bins) 
     
@@ -117,14 +123,17 @@ def main(args):
         imageio.imwrite(args.output_images_dir + file, img_rgb_final*255)                
 
 if __name__ == '__main__':
+
+    # Set all configurations and directories here in this section
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--test_images_dir', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/dataset/test/images', help = 'directory for test images')
-    parser.add_argument('--output_images_dir', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/output/', help = 'directory to save output images')
+    # Files and directories parameters
+    parser.add_argument('--test_images_dir', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/dataset/test/images', help = 'Directory of test dataset images')
+    parser.add_argument('--output_images_dir', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/output/', help = 'Directory where the output images will be saved')
 
-    parser.add_argument('--model_file', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/model-1000-25.ckpt', help = 'model to be loaded')
+    parser.add_argument('--model_file', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/model-1000-25.ckpt', help = 'Specific trained model to be loaded')
 
-    parser.add_argument('--Q_bins_file', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/code/resources/pts_in_hull.npy', help = 'pts_in_hull.npy file to be loaded')
+    parser.add_argument('--Q_bins_file', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/code/resources/pts_in_hull.npy', help = 'pts_in_hull.npy file with 313 quantized color to be loaded')
    
     args = parser.parse_args()
     print(args)
