@@ -12,7 +12,7 @@ import torch.nn.functional as F
 from torchvision import transforms
 
 from training_layers import PriorBoostLayer, NNEncLayer, ClassRebalanceMultLayer, NonGrayMaskLayer
-from data_loader import TrainImageFolder, CustomDataset
+from data_loader import CustomDataset
 from model import Color_model
 
 original_transform = transforms.Compose([
@@ -107,11 +107,11 @@ def main(args):
             optimizer.step()
 
             # Print info about the training according to the log_step value
-            if i % args.log_step == 0:
+            if i+1 % args.log_step == 0:
                 print('Epoch [{}/{}], Batch [{}/{}]'.format(epoch, args.num_epochs, i, total_batch))
 
             # Save the model according to the checkpoints configured
-            if epoch in args.checkpoint_step and i == args.batch_size - 1:
+            if epoch in args.checkpoint_step and i == (10000/args.batch_size)-1:
                 torch.save(model.state_dict(), os.path.join(args.model_path, 'model-{}-{}.ckpt'.format(epoch + 1, i + 1)))
             
         # Average Loss of an epoch for training dataset.
@@ -148,11 +148,11 @@ if __name__ == '__main__':
     parser.add_argument('--load_model', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/model-1-25.ckpt', help = 'Specific trained model to be loaded')
     parser.add_argument('--save_lossCurve', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/loss_curve.jpg', help = 'Path where the loss curve image will be saved')
     
-    parser.add_argument('--log_step', type = int, default = 50, help = 'Step size for printing info about the training progress')
-    parser.add_argument('--checkpoint_step', type = list, default = [24, 49, 74, 99, 124, 149, 174, 199, 224, 249, 274, 299, 324, 349, 374, 399], help = 'Checkpoints for saving partial and final trained models')
+    parser.add_argument('--log_step', type = int, default = 100, help = 'Step size for printing info about the training progress')
+    parser.add_argument('--checkpoint_step', type = list, default = [24, 49, 74, 99], help = 'Checkpoints for saving partial and final trained models')
 
     # Model parameters
-    parser.add_argument('--num_epochs', type = int, default = 500, help ='Number of epochs')
+    parser.add_argument('--num_epochs', type = int, default = 100, help ='Number of epochs')
     parser.add_argument('--batch_size', type = int, default = 25, help ='Number of images in each batch')
     parser.add_argument('--learning_rate', type = float, default = 1e-3, help ='Learning rate, the step size at each iteration while moving toward a minimum of a loss function')
     parser.add_argument('--num_workers', type = int, default = 8, help ='Number of cores working')
@@ -164,6 +164,8 @@ if __name__ == '__main__':
 
     #100 [24, 49, 74, 99]
     #300 [24, 49, 74, 99, 124, 149, 174, 199, 224, 249, 274, 299]
+    #350 [24, 49, 74, 99, 124, 149, 174, 199, 224, 249, 274, 299, 324, 349]
+    #400 [24, 49, 74, 99, 124, 149, 174, 199, 224, 249, 274, 299, 324, 349, 374, 399]
     #500 [24, 49, 74, 99, 124, 149, 174, 199, 224, 249, 274, 299, 324, 349, 374, 399]
     #800 [24, 49, 74, 99, 124, 149, 174, 199, 224, 249, 274, 299, 324, 349, 374, 399, 424, 449, 474, 499, 524, 549, 574, 599, 624, 649, 674, 699, 724, 749, 774, 799]
     #1000 [24, 49, 74, 99, 124, 149, 174, 199, 224, 249, 274, 299, 324, 349, 374, 399, 424, 449, 474, 499, 524, 549, 574, 599, 624, 649, 674, 699, 724, 749, 774, 799, 824, 849, 874, 899, 924, 949, 974, 999]    
