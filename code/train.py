@@ -47,6 +47,7 @@ def main(args):
     #####################################################################
     #----------------------->> TRAINING STEP <<-------------------------#
     #####################################################################
+    print("====>> Training step started!! <<====")
 
     # Number of batches
     total_batch = len(data_loader)
@@ -107,11 +108,11 @@ def main(args):
             optimizer.step()
 
             # Print info about the training according to the log_step value
-            if i+1 % args.log_step == 0:
-                print('Epoch [{}/{}], Batch [{}/{}]'.format(epoch, args.num_epochs, i, total_batch))
+            if (i+1) % args.log_step == 0:
+                print('Epoch [{}/{}], Batch [{}/{}]'.format(epoch+1, args.num_epochs, i+1, total_batch))
 
             # Save the model according to the checkpoints configured
-            if epoch in args.checkpoint_step and i == (10000/args.batch_size)-1:
+            if epoch in args.checkpoint_step and i == (args.trainDataset_length/args.batch_size)-1:
                 torch.save(model.state_dict(), os.path.join(args.model_path, 'model-{}-{}.ckpt'.format(epoch + 1, i + 1)))
             
         # Average Loss of an epoch for training dataset.
@@ -144,6 +145,7 @@ if __name__ == '__main__':
 
     # Files and directories parameters
     parser.add_argument('--image_dir', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/dataset/train/images', help = 'Directory of train dataset images')
+    parser.add_argument('--trainDataset_length', type = int, default = 10000, help = 'Number of images in train dataset')
     parser.add_argument('--model_path', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models', help = 'Path where partial and final trained models will be saved')
     parser.add_argument('--load_model', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/model-1-25.ckpt', help = 'Specific trained model to be loaded')
     parser.add_argument('--save_lossCurve', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/loss_curve.jpg', help = 'Path where the loss curve image will be saved')
