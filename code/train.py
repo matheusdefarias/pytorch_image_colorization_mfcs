@@ -145,17 +145,18 @@ if __name__ == '__main__':
 
     # Files and directories parameters
     parser.add_argument('--image_dir', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/dataset/train/images', help = 'Directory of train dataset images')
-    parser.add_argument('--trainDataset_length', type = int, default = 10000, help = 'Number of images in train dataset')
+    parser.add_argument('--trainDataset_length', type = int, default = 320, help = 'Number of images in train dataset')
     parser.add_argument('--model_path', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models', help = 'Path where partial and final trained models will be saved')
     parser.add_argument('--load_model', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/model-1-25.ckpt', help = 'Specific trained model to be loaded')
     parser.add_argument('--save_lossCurve', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/loss_curve.jpg', help = 'Path where the loss curve image will be saved')
-    
-    parser.add_argument('--log_step', type = int, default = 100, help = 'Step size for printing info about the training progress')
-    parser.add_argument('--checkpoint_step', type = list, default = [24, 49, 74, 99], help = 'Checkpoints for saving partial and final trained models')
-
+        
     # Model parameters
-    parser.add_argument('--num_epochs', type = int, default = 100, help ='Number of epochs')
-    parser.add_argument('--batch_size', type = int, default = 25, help ='Number of images in each batch')
+    parser.add_argument('--num_epochs', type = int, default = 720, help ='Number of epochs')
+    parser.add_argument('--checkpoint_step', type = list, default = [24, 49, 74, 99, 124, 149, 174, 199, 224, 249, 274, 299, 324, 349, 374, 399, 424, 449, 474, 499, 524, 549, 574, 599, 624, 649, 674, 699, 719], help = 'Checkpoints for saving partial and final trained models')
+
+    parser.add_argument('--batch_size', type = int, default = 32, help ='Number of images in each batch')
+    parser.add_argument('--log_step', type = int, default = 5, help = 'Step size for printing info about the training progress')
+
     parser.add_argument('--learning_rate', type = float, default = 1e-3, help ='Learning rate, the step size at each iteration while moving toward a minimum of a loss function')
     parser.add_argument('--num_workers', type = int, default = 8, help ='Number of cores working')
     
@@ -165,9 +166,11 @@ if __name__ == '__main__':
     main(args)
 
     #100 [24, 49, 74, 99]
+    #120 [24, 49, 74, 99, 119]
     #300 [24, 49, 74, 99, 124, 149, 174, 199, 224, 249, 274, 299]
     #350 [24, 49, 74, 99, 124, 149, 174, 199, 224, 249, 274, 299, 324, 349]
     #400 [24, 49, 74, 99, 124, 149, 174, 199, 224, 249, 274, 299, 324, 349, 374, 399]
     #500 [24, 49, 74, 99, 124, 149, 174, 199, 224, 249, 274, 299, 324, 349, 374, 399]
+    #720 [24, 49, 74, 99, 124, 149, 174, 199, 224, 249, 274, 299, 324, 349, 374, 399, 424, 449, 474, 499, 524, 549, 574, 599, 624, 649, 674, 699, 719]
     #800 [24, 49, 74, 99, 124, 149, 174, 199, 224, 249, 274, 299, 324, 349, 374, 399, 424, 449, 474, 499, 524, 549, 574, 599, 624, 649, 674, 699, 724, 749, 774, 799]
     #1000 [24, 49, 74, 99, 124, 149, 174, 199, 224, 249, 274, 299, 324, 349, 374, 399, 424, 449, 474, 499, 524, 549, 574, 599, 624, 649, 674, 699, 724, 749, 774, 799, 824, 849, 874, 899, 924, 949, 974, 999]    
