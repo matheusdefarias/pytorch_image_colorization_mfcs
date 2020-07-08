@@ -11,7 +11,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import transforms
 
-from training_layers import PriorBoostLayer, NNEncLayer, ClassRebalanceMultLayer, NonGrayMaskLayer
+from training_layers import NNEncLayer, NonGrayMaskLayer, PriorBoostLayer,ClassRebalanceMultLayer 
 from data_loader import CustomDataset
 from model import Color_model
 
@@ -43,6 +43,8 @@ def main(args):
 
     # Instance of 'NNEncLayer' class that is responsable for to return a probability distribution for each pixel of the (a,b) channels. This class is in 'training_layers.py' file 
     encode_ab_layer = NNEncLayer()   
+    nongraymask_layer = NonGrayMaskLayer()
+    priorboost_layer = PriorBoostLayer()
 
     #####################################################################
     #----------------------->> TRAINING STEP <<-------------------------#
@@ -76,24 +78,21 @@ def main(args):
             # 'encode_ab' -> represents a probability distribution for each pixel of the (a,b) channels
             # 'max_encode_ab' -> represents the indexes that have the highest values of probability along each pixel layers
             encode_ab, max_encode_ab = encode_ab_layer.forward(img_ab)
-            encode_ab = torch.from_numpy(encode_ab).long().cuda()
-
-            #with open('encode_ab.txt', 'w') as file:
-            #    file.write(str(encode_ab))
+            #encode_ab = torch.from_numpy(encode_ab).long().cuda()
 
             # 'max_encode_ab' is used as targets. So it is converted to long data type and then loaded to the GPU
             targets = torch.Tensor(max_encode_ab).long().cuda()
+
+            nongray_mask = torch.Tensor(nongraymask_layer.forward(img_ab)).float().cuda()
+            prior_boost = torch.Tensor(priorboost_layer.forward(encode_ab)).float().cuda()
+            prior_boost_nongray = prior_boost * nongray_mask
+            #print('Prior Boost Nongray:',prior_boost_nongray)
+            #print('Shape:',prior_boost_nongray.shape)
+
             # The input grayscale images are submitted to the model and the result tensor with shape [Bx313xWxH] is stored in 'output'
             outputs = model(images)
 
-            #print(encode_ab.shape)
-            #print(outputs.shape)
-            #output=outputs[0].cpu().data.numpy()
-            #out_max=np.argmax(output,axis=0)
-
-            #print('set',set(out_max.flatten()))
-
-            #loss = (criterion(outputs,targets)*(boost_nongray.squeeze(1))).mean()
+            # loss = (criterion(outputs,targets)*(boost_nongray.squeeze(1))).mean()
 
             # The loss is performed for each batch(image)
             loss = criterion(outputs,targets)
@@ -101,8 +100,6 @@ def main(args):
             # Every loss per batch is summed to get the final loss for each epoch. 
             running_loss += loss.item() 
             
-            #multi=loss*boost_nongray.squeeze(1)
-
             model.zero_grad()            
             loss.backward()
             optimizer.step()
@@ -145,17 +142,17 @@ if __name__ == '__main__':
 
     # Files and directories parameters
     parser.add_argument('--image_dir', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/dataset/train/images', help = 'Directory of train dataset images')
-    parser.add_argument('--trainDataset_length', type = int, default = 320, help = 'Number of images in train dataset')
+    parser.add_argument('--trainDataset_length', type = int, default = 1, help = 'Number of images in train dataset')
     parser.add_argument('--model_path', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models', help = 'Path where partial and final trained models will be saved')
     parser.add_argument('--load_model', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/model-1-25.ckpt', help = 'Specific trained model to be loaded')
     parser.add_argument('--save_lossCurve', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/loss_curve.jpg', help = 'Path where the loss curve image will be saved')
         
     # Model parameters
-    parser.add_argument('--num_epochs', type = int, default = 720, help ='Number of epochs')
-    parser.add_argument('--checkpoint_step', type = list, default = [24, 49, 74, 99, 124, 149, 174, 199, 224, 249, 274, 299, 324, 349, 374, 399, 424, 449, 474, 499, 524, 549, 574, 599, 624, 649, 674, 699, 719], help = 'Checkpoints for saving partial and final trained models')
+    parser.add_argument('--num_epochs', type = int, default = 1, help ='Number of epochs')
+    parser.add_argument('--checkpoint_step', type = list, default = [24, 49, 74, 99], help = 'Checkpoints for saving partial and final trained models')
 
-    parser.add_argument('--batch_size', type = int, default = 32, help ='Number of images in each batch')
-    parser.add_argument('--log_step', type = int, default = 5, help = 'Step size for printing info about the training progress')
+    parser.add_argument('--batch_size', type = int, default = 1, help ='Number of images in each batch')
+    parser.add_argument('--log_step', type = int, default = 1, help = 'Step size for printing info about the training progress')
 
     parser.add_argument('--learning_rate', type = float, default = 1e-3, help ='Learning rate, the step size at each iteration while moving toward a minimum of a loss function')
     parser.add_argument('--num_workers', type = int, default = 8, help ='Number of cores working')
