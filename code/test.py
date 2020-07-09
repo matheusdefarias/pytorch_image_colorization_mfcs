@@ -100,8 +100,11 @@ def main(args):
         
         # Apply softmax function over the 313 layers of the tensor. This will generate a probability distribution across the 313 layers for each pixel
         soft_image_log_t = soft(img_ab_313_log_t)
-        #print(soft_image_log_t.max())
-        #print(torch.sum(soft_image_log_t,dim=1))
+        # print(soft_image_log_t.shape)
+        # print(soft_image_log_t)
+        # print(soft_image_log_t.max())
+        # print(soft_image_log_t.min())
+        # print(torch.sum(soft_image_log_t,dim=1))
         
         # - bins_matrix_values -> Matrix containing the highest probability value of the distribution for each pixel
         # - bins_matrix_indexes -> Matrix containing the index of the probability distribution over the 313 layers that has the highest value of the probability distribution

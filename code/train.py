@@ -11,7 +11,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import transforms
 
-from training_layers import NNEncLayer, NonGrayMaskLayer, PriorBoostLayer,ClassRebalanceMultLayer 
+from training_layers import NNEncLayer, NonGrayMaskLayer, PriorBoostLayer
+from class_rebalance import ClassRebalance
 from data_loader import CustomDataset
 from model import Color_model
 
@@ -42,9 +43,13 @@ def main(args):
     optimizer = torch.optim.Adam(params, lr = args.learning_rate)
 
     # Instance of 'NNEncLayer' class that is responsable for to return a probability distribution for each pixel of the (a,b) channels. This class is in 'training_layers.py' file 
-    encode_ab_layer = NNEncLayer()   
+    encode_ab_layer = NNEncLayer()
+    # Instance of 'NonGrayMaskLayer'. Return 1 for not color images and 0 for grayscale images. 
     nongraymask_layer = NonGrayMaskLayer()
+    # Instance of 'PriorBoostLayer'. Returns the weights for every color.
     priorboost_layer = PriorBoostLayer()
+    # Instance of 'ClassRebalance'. Ponders the colors with weights trying to make rare colors to contribute with the model. 
+    class_rebalance_layer = ClassRebalance.apply
 
     #####################################################################
     #----------------------->> TRAINING STEP <<-------------------------#
@@ -86,13 +91,14 @@ def main(args):
             nongray_mask = torch.Tensor(nongraymask_layer.forward(img_ab)).float().cuda()
             prior_boost = torch.Tensor(priorboost_layer.forward(encode_ab)).float().cuda()
             prior_boost_nongray = prior_boost * nongray_mask
-            #print('Prior Boost Nongray:',prior_boost_nongray)
-            #print('Shape:',prior_boost_nongray.shape)
-
+            
             # The input grayscale images are submitted to the model and the result tensor with shape [Bx313xWxH] is stored in 'output'
             outputs = model(images)
+            
+            # Class Rebalance execution, pondering the gradients.
+            outputs = class_rebalance_layer(outputs, prior_boost_nongray)
 
-            # loss = (criterion(outputs,targets)*(boost_nongray.squeeze(1))).mean()
+            # loss = (criterion(outputs,targets)*(prior_boost_nongray.squeeze(1))).mean()
 
             # The loss is performed for each batch(image)
             loss = criterion(outputs,targets)
