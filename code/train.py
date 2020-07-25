@@ -111,7 +111,7 @@ def main(args):
             optimizer.step()
 
             # Print info about the training according to the log_step value
-            if (i+1) % args.log_step == 0:
+            if (i) % args.log_step == 0:
                 print('Epoch [{}/{}], Batch [{}/{}]'.format(epoch+1, args.num_epochs, i+1, total_batch))
 
             # Save the model according to the checkpoints configured
@@ -122,7 +122,7 @@ def main(args):
         epoch_loss = running_loss/len(data_loader) # Acumulated Loss divided by number of images batches on training dataset.
         running_loss_history.append(epoch_loss)
 
-        print('--------->>> Epoch [{}/{}], Epoch Loss: {:.4f}'.format(epoch, args.num_epochs, epoch_loss))
+        print('--------->>> Epoch [{}/{}], Epoch Loss: {:.4f}'.format(epoch+1, args.num_epochs, epoch_loss))
     
     print('Loss History: {}'.format(running_loss_history))
     print("{:.2f} minutes".format((time.time() - start_time)/60))
@@ -148,17 +148,17 @@ if __name__ == '__main__':
 
     # Files and directories parameters
     parser.add_argument('--image_dir', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/dataset/train/images', help = 'Directory of train dataset images')
-    parser.add_argument('--trainDataset_length', type = int, default = 3600, help = 'Number of images in train dataset')
+    parser.add_argument('--trainDataset_length', type = int, default = 9000, help = 'Number of images in train dataset')
     parser.add_argument('--model_path', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models', help = 'Path where partial and final trained models will be saved')
     parser.add_argument('--load_model', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/model-1-25.ckpt', help = 'Specific trained model to be loaded')
     parser.add_argument('--save_lossCurve', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/loss_curve.jpg', help = 'Path where the loss curve image will be saved')
         
     # Model parameters
-    parser.add_argument('--num_epochs', type = int, default = 360, help ='Number of epochs')
-    parser.add_argument('--checkpoint_step', type = list, default = [24, 49, 74, 99, 124, 149, 174, 199, 224, 249, 274, 299, 324, 349, 359], help = 'Checkpoints for saving partial and final trained models')
+    parser.add_argument('--num_epochs', type = int, default = 1000, help ='Number of epochs')
+    parser.add_argument('--checkpoint_step', type = list, default = [24, 49, 74, 99, 124, 149, 174, 199, 224, 249, 274, 299, 324, 349, 374, 399, 424, 449, 474, 499, 524, 549, 574, 599, 624, 649, 674, 699, 724, 749, 774, 799, 824, 849, 874, 899, 924, 949, 974, 999], help = 'Checkpoints for saving partial and final trained models')
 
     parser.add_argument('--batch_size', type = int, default = 25, help ='Number of images in each batch')
-    parser.add_argument('--log_step', type = int, default = 36, help = 'Step size for printing info about the training progress')
+    parser.add_argument('--log_step', type = int, default = 89, help = 'Step size for printing info about the training progress')
 
     parser.add_argument('--learning_rate', type = float, default = 1e-3, help ='Learning rate, the step size at each iteration while moving toward a minimum of a loss function')
     parser.add_argument('--num_workers', type = int, default = 8, help ='Number of cores working')

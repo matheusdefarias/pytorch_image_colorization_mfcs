@@ -143,7 +143,8 @@ def main(args):
         img_rgb_final = lab2rgb(img_lab_final)
 
         # Saving the colorized image
-        imageio.imwrite(args.output_images_dir + file, img_as_ubyte(abs(img_rgb_final)))                
+        #imageio.imwrite(args.output_images_dir + file, img_as_ubyte(abs(img_rgb_final)))
+        imageio.imwrite(args.output_images_dir + file, img_rgb_final)                  
 
 if __name__ == '__main__':
 
@@ -154,7 +155,7 @@ if __name__ == '__main__':
     parser.add_argument('--test_images_dir', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/dataset/test/images', help = 'Directory of test dataset images')
     parser.add_argument('--output_images_dir', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/output/', help = 'Directory where the output images will be saved')
 
-    parser.add_argument('--model_file', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/model-720-10.ckpt', help = 'Specific trained model to be loaded')
+    parser.add_argument('--model_file', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/model-1000-360.ckpt', help = 'Specific trained model to be loaded')
 
     parser.add_argument('--Q_bins_file', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/code/resources/pts_in_hull.npy', help = 'pts_in_hull.npy file with 313 quantized color to be loaded')
    
