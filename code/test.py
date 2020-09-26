@@ -143,7 +143,7 @@ def main(args):
         img_rgb_final = lab2rgb(img_lab_final)
         
         # Saving the colorized image
-        # file = file.replace("jpg", "png")
+        file = file.replace("jpg", "png")
         #imageio.imwrite(args.output_images_dir + file, img_as_ubyte(abs(img_rgb_final)))
         imageio.imwrite(args.output_images_dir + file, img_rgb_final)                  
 

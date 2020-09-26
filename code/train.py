@@ -154,7 +154,7 @@ if __name__ == '__main__':
     parser.add_argument('--save_lossCurve', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/loss_curve.jpg', help = 'Path where the loss curve image will be saved')
         
     # Model parameters
-    parser.add_argument('--num_epochs', type = int, default = 1000, help ='Number of epochs')
+    parser.add_argument('--num_epochs', type = int, default = 100, help ='Number of epochs')
     parser.add_argument('--checkpoint_step', type = list, default = [24, 49, 74, 99, 124, 149, 174, 199, 224, 249, 274, 299, 324, 349, 374, 399, 424, 449, 474, 499, 524, 549, 574, 599, 624, 649, 674, 699, 724, 749, 774, 799, 824, 849, 874, 899, 924, 949, 974, 999], help = 'Checkpoints for saving partial and final trained models')
 
     parser.add_argument('--batch_size', type = int, default = 25, help ='Number of images in each batch')

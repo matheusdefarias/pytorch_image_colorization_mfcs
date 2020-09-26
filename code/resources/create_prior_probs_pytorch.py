@@ -16,14 +16,14 @@ from sklearn.neighbors import NearestNeighbors
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 # Read randomly images from the file path.
-root = "/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/img_test/"
+root = "/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/dataset/train/images/"
 filename_lists = sorted(glob(join(root, "*.jpg")))
 random.shuffle(filename_lists)
 
 # Load the 313 bins of color.
 # points shape -> (313, 2).
 # Directory of pts_in_hull.npy file
-points = np.load("/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/pts_in_hull.npy")
+points = np.load("/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/code/resources/pts_in_hull.npy")
 points = points.astype(np.float64)
 points = torch.from_numpy(points)
 
@@ -57,6 +57,7 @@ for index, img_file in enumerate(filename_lists):
 
 # The probabilites for each bin is performed.
 probs = probs / np.sum(probs)
+probs = probs + 0.000001
 print(probs)
 
 # Print all bins with probabilities > 0.0
@@ -66,4 +67,4 @@ for i in range(len(probs)):
 
 # Save the final file .npy containing the probability of each bin of color from the dataset in use.
 # Directory to save the .npy file
-np.save("/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/prior_probs", probs)
+np.save("/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/code/resources/prior_probs", probs)
