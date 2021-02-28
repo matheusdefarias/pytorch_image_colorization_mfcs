@@ -1,3 +1,12 @@
+# Colorful Image Colorization(2016) paper
+#     - Project website: https://richzhang.github.io/colorization/
+#     - GitHub Repository: https://github.com/richzhang/colorization
+#     - Caffe implementation: https://github.com/richzhang/colorization/tree/caffe
+#
+# Pytorch Implementation of Colorful Image Colorization(2016) paper 
+#     - By: Matheus de Farias Cavalcanti Santos
+#     - Repository: https://github.com/matheusdefarias/pytorch_image_colorization_mfcs
+
 # Imports
 import os
 import imageio
@@ -100,35 +109,20 @@ def main(args):
         
         # Apply softmax function over the 313 layers of the tensor. This will generate a probability distribution across the 313 layers for each pixel
         soft_image_log_t = soft(img_ab_313_log_t)
-        # print(soft_image_log_t.shape)
-        # print(soft_image_log_t)
-        # print(soft_image_log_t.max())
-        # print(soft_image_log_t.min())
-        # print(torch.sum(soft_image_log_t,dim=1))
-        
+                
         # - bins_matrix_values -> Matrix containing the highest probability value of the distribution for each pixel
         # - bins_matrix_indexes -> Matrix containing the index of the probability distribution over the 313 layers that has the highest value of the probability distribution
         bins_matrix_values, bins_matrix_indexes = torch.max(soft_image_log_t, dim=1, keepdim=True )
-        # print(bins_matrix_values.shape)
-        # print(bins_matrix_values.min())
-        # print(bins_matrix_values.max())
-        # print(bins_matrix_indexes.shape)
-        # print(bins_matrix_indexes.min())
-        # print(bins_matrix_indexes.max())
-
-
-        bins_matrix_indexes_flatten = torch.flatten(bins_matrix_indexes)
-        #print(set(bins_matrix_indexes_flatten))
         
+        bins_matrix_indexes_flatten = torch.flatten(bins_matrix_indexes)
+                
         # Use the indexes of highest probabilities values of the distribution for each pixel to select the bins(a and b values) of the 313 quantized colors stored in 'Q_bins' 
         predicted_ab_channels = Q_bins[bins_matrix_indexes[:,:]]
         predicted_ab_channels = predicted_ab_channels.squeeze(0).squeeze(0).transpose(2,0,1)
 
         predicted_ab_channels = predicted_ab_channels.transpose(1, 2, 0)
         img_l_original = img_l_original.numpy()
-        # print(predicted_ab_channels.shape)
-        # print(predicted_ab_channels)
-
+        
         # Create the final image matrix structure to receive the L channel and the (a,b) predicted channels.
         # The shape of this final image is ([Original Width]x[Original Height]x3) and this structure is filled initialy with zeros.
         img_lab_final = np.zeros((ori_size[0],ori_size[1], 3)) 
@@ -137,8 +131,6 @@ def main(args):
         img_lab_final[:,:,0] = img_l_original
         img_lab_final[:,:,1:] = predicted_ab_channels
 
-        #print(img_lab_final.transpose(2,0,1))
-        
         # Converting the final colorized imagem colorspace from CIE Lab to RGB
         img_rgb_final = lab2rgb(img_lab_final)
         
@@ -153,12 +145,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     # Files and directories parameters
-    parser.add_argument('--test_images_dir', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/dataset/test/images', help = 'Directory of test dataset images')
-    parser.add_argument('--output_images_dir', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/output/', help = 'Directory where the output images will be saved')
+    parser.add_argument('--test_images_dir', type = str, default = '../dataset/test/images', help = 'Directory of test dataset images')
+    parser.add_argument('--output_images_dir', type = str, default = '../output/', help = 'Directory where the output images will be saved')
 
-    parser.add_argument('--model_file', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/model-200-250.ckpt', help = 'Specific trained model to be loaded')
+    parser.add_argument('--model_file', type = str, default = '../models/model-xxx-xxx.ckpt', help = 'Specific trained model to be loaded')
 
-    parser.add_argument('--Q_bins_file', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/code/resources/pts_in_hull.npy', help = 'pts_in_hull.npy file with 313 quantized color to be loaded')
+    parser.add_argument('--Q_bins_file', type = str, default = './resources/pts_in_hull.npy', help = 'pts_in_hull.npy file with 313 quantized color to be loaded')
    
     args = parser.parse_args()
     print(args)

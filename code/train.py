@@ -1,3 +1,12 @@
+# Colorful Image Colorization(2016) paper
+#     - Project website: https://richzhang.github.io/colorization/
+#     - GitHub Repository: https://github.com/richzhang/colorization
+#     - Caffe implementation: https://github.com/richzhang/colorization/tree/caffe
+#
+# Pytorch Implementation of Colorful Image Colorization(2016) paper 
+#     - By: Matheus de Farias Cavalcanti Santos
+#     - Repository: https://github.com/matheusdefarias/pytorch_image_colorization_mfcs
+
 # Imports
 import os
 import time
@@ -147,11 +156,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     # Files and directories parameters
-    parser.add_argument('--image_dir', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/dataset/train/images', help = 'Directory of train dataset images')
+    parser.add_argument('--image_dir', type = str, default = '../dataset/train/images', help = 'Directory of train dataset images')
     parser.add_argument('--trainDataset_length', type = int, default = 9000, help = 'Number of images in train dataset')
-    parser.add_argument('--model_path', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models', help = 'Path where partial and final trained models will be saved')
-    parser.add_argument('--load_model', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/model-1-25.ckpt', help = 'Specific trained model to be loaded')
-    parser.add_argument('--save_lossCurve', type = str, default = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/models/loss_curve.jpg', help = 'Path where the loss curve image will be saved')
+    parser.add_argument('--model_path', type = str, default = '../models', help = 'Path where partial and final trained models will be saved')
+    parser.add_argument('--load_model', type = str, default = '../models/model-xxx-xxx.ckpt', help = 'Specific trained model to be loaded')
+    parser.add_argument('--save_lossCurve', type = str, default = '../models/loss_curve.jpg', help = 'Path where the loss curve image will be saved')
         
     # Model parameters
     parser.add_argument('--num_epochs', type = int, default = 200, help ='Number of epochs')

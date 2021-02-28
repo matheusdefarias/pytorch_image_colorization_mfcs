@@ -1,3 +1,12 @@
+# Colorful Image Colorization(2016) paper
+#     - Project website: https://richzhang.github.io/colorization/
+#     - GitHub Repository: https://github.com/richzhang/colorization
+#     - Caffe implementation: https://github.com/richzhang/colorization/tree/caffe
+#
+# Pytorch Implementation of Colorful Image Colorization(2016) paper 
+#     - By: Matheus de Farias Cavalcanti Santos
+#     - Repository: https://github.com/matheusdefarias/pytorch_image_colorization_mfcs
+
 import random
 from glob import glob
 from os.path import *
@@ -16,14 +25,14 @@ from sklearn.neighbors import NearestNeighbors
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 # Read randomly images from the file path.
-root = "/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/dataset/train/images/"
+root = "../../dataset/train/images/"
 filename_lists = sorted(glob(join(root, "*.jpg")))
 random.shuffle(filename_lists)
 
 # Load the 313 bins of color.
 # points shape -> (313, 2).
 # Directory of pts_in_hull.npy file
-points = np.load("/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/code/resources/pts_in_hull.npy")
+points = np.load("./pts_in_hull.npy")
 points = points.astype(np.float64)
 points = torch.from_numpy(points)
 
@@ -67,4 +76,4 @@ for i in range(len(probs)):
 
 # Save the final file .npy containing the probability of each bin of color from the dataset in use.
 # Directory to save the .npy file
-np.save("/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/code/resources/prior_probs", probs)
+np.save("./prior_probs", probs)

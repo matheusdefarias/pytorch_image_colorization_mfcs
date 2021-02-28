@@ -1,3 +1,12 @@
+# Colorful Image Colorization(2016) paper
+#     - Project website: https://richzhang.github.io/colorization/
+#     - GitHub Repository: https://github.com/richzhang/colorization
+#     - Caffe implementation: https://github.com/richzhang/colorization/tree/caffe
+#
+# Pytorch Implementation of Colorful Image Colorization(2016) paper 
+#     - By: Matheus de Farias Cavalcanti Santos
+#     - Repository: https://github.com/matheusdefarias/pytorch_image_colorization_mfcs
+
 # Imports
 import os
 

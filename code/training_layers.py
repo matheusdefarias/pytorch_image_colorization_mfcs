@@ -14,7 +14,7 @@ import sklearn.neighbors as nn
 from skimage.transform import resize
 from skimage import color
 
-resources_directory = '/home/mfcs/mestrado_projeto/pytorch_image_colorization_mfcs/code/resources/'
+resources_directory = './resources/'
 
 class NNEncLayer(object):
     ''' Layer which encodes ab map into Q colors
